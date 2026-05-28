@@ -1,0 +1,3 @@
+etc/config.env
+*.swp
+.DS_Store

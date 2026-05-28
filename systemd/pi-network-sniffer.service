@@ -1,0 +1,16 @@
+[Unit]
+Description=pi-network-sniffer: auto-run LAN inventory + upload to the homelab server
+Wants=network-online.target wg-quick@wg0.service systemd-time-wait-sync.service
+After=network-online.target wg-quick@wg0.service systemd-time-wait-sync.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/pi-network-sniffer/bin/auto-pentest.sh
+TimeoutStartSec=30min
+# Run as root: netenum.sh needs raw sockets for nmap and arp-scan, and the
+# rsync uploads use /root/.ssh/id_ed25519.
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
