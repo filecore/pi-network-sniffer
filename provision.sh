@@ -30,14 +30,15 @@ apt-get update -q
 apt-get install -y -q \
     nmap arp-scan jq python3 unzip curl git rsync nikto \
     wireguard-tools openssh-client iproute2 iputils-ping \
-    ca-certificates dnsutils
+    ca-certificates dnsutils \
+    iw wireless-tools
 
 # nbtscan / avahi-utils / snmp are optional but enrich netenum output.
 apt-get install -y -q nbtscan avahi-utils snmp || true
 
 echo "[*] Laying out ${INSTALL_DIR} ..."
 mkdir -p "${INSTALL_DIR}/bin" "${INSTALL_DIR}/etc" "${INSTALL_DIR}/pentest"
-mkdir -p /var/lib/pi-network-sniffer/runs /var/log/pi-network-sniffer
+mkdir -p /var/lib/pi-network-sniffer/runs /var/lib/pi-network-sniffer/queue /var/log/pi-network-sniffer
 
 cp -f "${REPO_DIR}/bin/"*.sh "${INSTALL_DIR}/bin/"
 chmod +x "${INSTALL_DIR}/bin/"*.sh

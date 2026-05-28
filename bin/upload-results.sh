@@ -91,12 +91,23 @@ LOCAL_CIDR="?"; GATEWAY_MAC="?"; PUBLIC_IP="?"
 # shellcheck disable=SC1090
 [ -f "${VANTAGE_FILE}" ] && source "${VANTAGE_FILE}"
 
+# Wi-Fi survey counts (best-effort).
+WIFI_JSON="${RUN_DIR}/wifi-scan.json"
+AP_TOTAL="-"; AP_OPEN="-"; AP_WEP="-"; AP_WPS="-"
+if [ -f "${WIFI_JSON}" ]; then
+    AP_TOTAL="$(python3 -c "import json; d=json.load(open('${WIFI_JSON}')); print(d.get('ap_count','?') if d.get('available') else '-')" 2>/dev/null || echo '?')"
+    AP_OPEN="$(python3 -c "import json; d=json.load(open('${WIFI_JSON}')); print(d.get('open_count','?') if d.get('available') else '-')" 2>/dev/null || echo '?')"
+    AP_WEP="$(python3 -c "import json; d=json.load(open('${WIFI_JSON}')); print(d.get('wep_count','?') if d.get('available') else '-')" 2>/dev/null || echo '?')"
+    AP_WPS="$(python3 -c "import json; d=json.load(open('${WIFI_JSON}')); print(d.get('wps_count','?') if d.get('available') else '-')" 2>/dev/null || echo '?')"
+fi
+
 MSG="$(cat <<EOF
 pi-network-sniffer run on ${HOSTNAME_SLUG}
 subnet: ${LOCAL_CIDR}
 gateway: ${GATEWAY_IP:-?} (${GATEWAY_MAC})
 public: ${PUBLIC_IP}
-hosts: ${HOSTS}  high: ${HIGH}  crit: ${CRIT}
+LAN  hosts: ${HOSTS}  high: ${HIGH}  crit: ${CRIT}
+Wifi APs: ${AP_TOTAL}  open: ${AP_OPEN}  WEP: ${AP_WEP}  WPS: ${AP_WPS}
 netenum exit: ${NETENUM_RC}  upload: $([ "${UPLOAD_RC}" -eq 0 ] && echo ok || echo "FAIL(${UPLOAD_RC})")
 run: ${TS}
 EOF
