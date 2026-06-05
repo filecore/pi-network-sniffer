@@ -7,6 +7,7 @@
 # (with automatic endpoint probing and patching), SSH key authorisation,
 # and service enablement.
 
+[ -z "$BASH_VERSION" ] && exec bash "$0" "$@"
 set -euo pipefail
 
 _r='\033[0;31m' _g='\033[0;32m' _y='\033[1;33m' _n='\033[0m'
